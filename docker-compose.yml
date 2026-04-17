@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: apppadel_postgres
+    environment:
+      POSTGRES_DB: app_padel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: apppadel_backend
+    depends_on:
+      - postgres
+    environment:
+      PORT: 4000
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/app_padel
+      JWT_SECRET: apppadel_secret_dev
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: apppadel_frontend
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:4000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
