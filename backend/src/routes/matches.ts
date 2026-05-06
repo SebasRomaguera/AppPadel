@@ -8,7 +8,7 @@ const router = Router();
 const createMatchSchema = z.object({
   clubId: z.number().int().positive(),
   courtId: z.number().int().positive(),
-  scheduledAt: z.iso.datetime(),
+  scheduledAt: z.string().datetime(),
   durationMinutes: z.number().int().min(60).max(180),
   levelMin: z.number().int().min(0).max(6),
   levelMax: z.number().int().min(0).max(6),

@@ -37,27 +37,55 @@ type Match = {
   current_players: number;
 };
 
+type Reservation = {
+  id: number;
+  starts_at: string;
+  duration_minutes: number;
+  created_at: string;
+  club_name: string;
+  club_city: string;
+  court_name: string;
+  court_surface: string;
+};
+
+type Toast = {
+  message: string;
+  kind: "success" | "error";
+};
+
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:4000/api";
 
 const quizQuestions = [
-  "¿Cuántas veces juegas pádel cada semana?",
-  "¿Controlas dirección y profundidad en la mayoría de golpes?",
-  "¿Cómo te manejas en la volea y bandeja?",
-  "¿Sueles jugar partidos competitivos?",
-  "¿Qué tal defiendes con rebote de pared?",
-  "¿Tienes constancia táctica en dobles?",
-  "¿Qué porcentaje de segundos saques metes?",
-  "¿Mantienes nivel bajo presión?",
+  "¿Controlas la dirección y profundidad en tus golpes habituales?",
+  "¿Dominas la técnica de volea y bandeja?",
+  "¿Ejecutas correctamente el saque y el segundo saque?",
+  "¿Utilizas efectivos golpes de ataque (vibora, bandeja, remate)?",
+  "¿Organizas tácticamente con tu pareja en dobles?",
+  "¿Mantienes concentración y nivel bajo presión?",
+  "¿Anticipas y cubres posiciones de forma consistente?",
+  "¿Jugas movimientos coordinados desde el fondo de pista?",
 ];
+
+function toDatetimeLocal(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(
+    date.getHours()
+  )}:${pad(date.getMinutes())}`;
+}
+
+const defaultReservationStart = toDatetimeLocal(new Date(Date.now() + 60 * 60 * 1000));
 
 function App() {
   const [token, setToken] = useState<string>(() => localStorage.getItem("token") ?? "");
   const [user, setUser] = useState<User | null>(null);
   const [clubs, setClubs] = useState<Club[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [levelWindow, setLevelWindow] = useState(1);
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [message, setMessage] = useState("");
+  const [toast, setToast] = useState<Toast | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -81,7 +109,7 @@ function App() {
   const [reservationForm, setReservationForm] = useState({
     clubId: 0,
     courtId: 0,
-    startsAt: "",
+    startsAt: defaultReservationStart,
     durationMinutes: 90,
   });
 
@@ -102,12 +130,20 @@ function App() {
     void loadProfile();
     void loadClubs();
     void loadMatches(levelWindow);
+    void loadReservations();
   }, [token]);
 
   useEffect(() => {
     if (!token) return;
     void loadMatches(levelWindow);
   }, [levelWindow]);
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timeoutId = window.setTimeout(() => setToast(null), 2800);
+    return () => window.clearTimeout(timeoutId);
+  }, [toast]);
 
   async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
     const response = await fetch(`${API_URL}${path}`, {
@@ -168,6 +204,19 @@ function App() {
     }
   }
 
+  async function loadReservations() {
+    try {
+      const data = await apiRequest<{ reservations: Reservation[] }>("/reservations");
+      setReservations(data.reservations);
+    } catch (error) {
+      setMessage((error as Error).message);
+    }
+  }
+
+  function showToast(messageText: string, kind: Toast["kind"] = "success") {
+    setToast({ message: messageText, kind });
+  }
+
   async function handleRegister(event: FormEvent) {
     event.preventDefault();
     setLoading(true);
@@ -182,6 +231,7 @@ function App() {
       setToken(data.token);
       setUser(data.user);
       setMessage(`Registro correcto. Tu nivel inicial es ${data.user.level}.`);
+      showToast("Registro completado con éxito");
     } catch (error) {
       setMessage((error as Error).message);
     } finally {
@@ -203,6 +253,7 @@ function App() {
       setToken(data.token);
       setUser(data.user);
       setMessage("Bienvenido de nuevo.");
+      showToast("Sesión iniciada con éxito");
     } catch (error) {
       setMessage((error as Error).message);
     } finally {
@@ -214,6 +265,7 @@ function App() {
     try {
       await apiRequest(`/matches/${matchId}/join`, { method: "POST" });
       setMessage("Te has apuntado a la partida.");
+      showToast("Te has unido a la partida con éxito");
       await loadMatches();
     } catch (error) {
       setMessage((error as Error).message);
@@ -236,6 +288,7 @@ function App() {
         }),
       });
       setMessage("Partida creada correctamente.");
+      showToast("Partida creada con éxito");
       await loadMatches();
     } catch (error) {
       setMessage((error as Error).message);
@@ -256,8 +309,28 @@ function App() {
         }),
       });
       setMessage("Reserva creada correctamente.");
+      showToast("Reserva realizada con éxito");
+      await loadReservations();
     } catch (error) {
-      setMessage((error as Error).message);
+      const errorMessage = (error as Error).message;
+      setMessage(errorMessage);
+      showToast(errorMessage, "error");
+    }
+  }
+
+  async function cancelReservation(reservationId: number) {
+    const confirmed = window.confirm("¿Quieres cancelar esta reserva?");
+    if (!confirmed) return;
+
+    try {
+      await apiRequest(`/reservations/${reservationId}`, { method: "DELETE" });
+      setMessage("Reserva cancelada correctamente.");
+      showToast("Reserva cancelada con éxito");
+      await loadReservations();
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      setMessage(errorMessage);
+      showToast(errorMessage, "error");
     }
   }
 
@@ -269,7 +342,13 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${!token ? 'auth-mode' : ''}`}>
+      {toast && (
+        <div className={`toast toast-${toast.kind}`} role="status" aria-live="polite">
+          {toast.message}
+        </div>
+      )}
+
       <header className="topbar">
         <div>
           <p className="brand-tag">AppPadel</p>
@@ -281,8 +360,6 @@ function App() {
           </button>
         )}
       </header>
-
-      {message && <p className="feedback">{message}</p>}
 
       {!token ? (
         <section className="auth-card">
@@ -326,7 +403,7 @@ function App() {
               </button>
             </form>
           ) : (
-            <form className="panel" onSubmit={handleRegister}>
+            <form className="panel register-form" onSubmit={handleRegister}>
               <label>
                 Nombre
                 <input
@@ -587,6 +664,31 @@ function App() {
                 Confirmar reserva
               </button>
             </form>
+          </section>
+
+          <section className="panel">
+            <h2>Pistas reservadas</h2>
+            <div className="cards-grid">
+              {reservations.length === 0 && <p>No tienes reservas hechas todavía.</p>}
+              {reservations.map((reservation) => (
+                <article key={reservation.id} className="match-card">
+                  <h3>{reservation.club_name}</h3>
+                  <p>
+                    {reservation.court_name} · {reservation.court_surface}
+                  </p>
+                  <p>{reservation.club_city}</p>
+                  <p>{new Date(reservation.starts_at).toLocaleString()}</p>
+                  <p>Duración: {reservation.duration_minutes} minutos</p>
+                  <button
+                    type="button"
+                    className="danger-btn"
+                    onClick={() => cancelReservation(reservation.id)}
+                  >
+                    🗑 Cancelar reserva
+                  </button>
+                </article>
+              ))}
+            </div>
           </section>
         </main>
       )}

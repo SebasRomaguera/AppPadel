@@ -24,6 +24,11 @@
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
 }
 
+.app-shell.auth-mode {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .topbar {
   max-width: 1140px;
   margin: 0 auto 1rem;
@@ -66,10 +71,39 @@ h3 {
   border-radius: 12px;
 }
 
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  min-width: min(92vw, 340px);
+  max-width: 420px;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 48px rgba(17, 52, 41, 0.28);
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #0b9f79 0%, #00b4d8 100%);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #c0392b 0%, #e67e22 100%);
+}
+
 .auth-card,
 .dashboard {
   max-width: 1140px;
   margin: 0 auto;
+}
+
+.auth-card {
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
 }
 
 .auth-tabs {
@@ -156,6 +190,21 @@ select:focus {
   filter: brightness(0.97);
 }
 
+.danger-btn {
+  border: 1px solid #f0c7c2;
+  background: #fff5f4;
+  color: #a63d2f;
+  cursor: pointer;
+  border-radius: 11px;
+  font-weight: 700;
+  padding: 0.66rem 0.95rem;
+  font: inherit;
+}
+
+.danger-btn:hover {
+  background: #ffeceb;
+}
+
 .ghost-btn {
   background: #e6f2ed;
   color: var(--text);
@@ -164,9 +213,12 @@ select:focus {
 .quiz-grid {
   display: grid;
   gap: 0.6rem;
-  max-height: 300px;
-  overflow: auto;
   padding-right: 0.3rem;
+}
+
+.register-form {
+  display: grid !important;
+  gap: 0.8rem;
 }
 
 .dashboard {
@@ -183,6 +235,10 @@ select:focus {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
   gap: 0.85rem;
+}
+
+.cards-grid p {
+  margin: 0;
 }
 
 .match-card {
