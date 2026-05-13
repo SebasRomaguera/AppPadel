@@ -1,0 +1,62 @@
+erDiagram
+    USERS ||--o{ MATCHES : hosts
+    USERS ||--o{ MATCH_PLAYERS : joins
+    USERS ||--o{ RESERVATIONS : makes
+    MATCHES ||--o{ MATCH_PLAYERS : contains
+    MATCHES }o--|| CLUBS : located_in
+    MATCHES }o--|| COURTS : booked_at
+    COURTS }o--|| CLUBS : belongs_to
+    RESERVATIONS }o--|| CLUBS : at_club
+    RESERVATIONS }o--|| COURTS : at_court
+
+    USERS {
+        int id PK
+        string name
+        string email UK
+        string password_hash
+        int level "0-6"
+        int skill_score
+        boolean is_fake
+        timestamp created_at
+    }
+
+    CLUBS {
+        int id PK
+        string name
+        string city
+    }
+
+    COURTS {
+        int id PK
+        int club_id FK
+        string name
+        string surface
+    }
+
+    MATCHES {
+        int id PK
+        int host_user_id FK
+        int club_id FK
+        int court_id FK
+        timestamp scheduled_at
+        int duration_minutes
+        int level_min
+        int level_max
+        string title
+        string status "open/full/closed"
+    }
+
+    MATCH_PLAYERS {
+        int match_id FK
+        int user_id FK
+    }
+
+    RESERVATIONS {
+        int id PK
+        int user_id FK
+        int club_id FK
+        int court_id FK
+        timestamp starts_at
+        int duration_minutes
+        timestamp created_at
+    }

@@ -1,3 +1,18 @@
+/**
+ * AppPadel Backend Server
+ * RESTful API para gestión de reservas de pistas de pádel
+ * 
+ * Stack: Express.js + TypeScript + PostgreSQL
+ * Autenticación: JWT
+ * 
+ * Endpoints principales:
+ * - POST /api/auth/register - Registro de usuario
+ * - POST /api/auth/login - Inicio de sesión
+ * - GET /api/matches/open - Listado de partidas abiertas
+ * - POST /api/matches - Crear nueva partida
+ * - POST /api/reservations - Crear reserva de pista
+ */
+
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -11,6 +26,7 @@ import clubRoutes from "./routes/clubs";
 
 const app = express();
 
+// Middlewares de seguridad
 app.use(helmet());
 app.use(
   cors({
@@ -21,6 +37,10 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 
+/**
+ * Health check endpoint
+ * Verifica que el servidor y la base de datos estén operativos
+ */
 app.get("/api/health", async (_req, res) => {
   try {
     await pool.query("SELECT 1");

@@ -1,0 +1,52 @@
+graph TB
+    subgraph Cliente["🖥️ Cliente (Navegador)"]
+        UI["React UI<br/>TypeScript + Vite<br/>- Quiz<br/>- Búsqueda Partidas<br/>- Reservas"]
+        Cache["LocalStorage<br/>JWT Token"]
+    end
+
+    subgraph Red["🌐 Red HTTP/REST"]
+        API["/api/v1<br/>JSON over HTTP"]
+    end
+
+    subgraph Backend["⚙️ Backend (Node.js)"]
+        Auth["🔐 Autenticación<br/>JWT + BCrypt"]
+        Quiz["📊 Cálculo Nivel<br/>Quiz Service"]
+        Matches["🎾 Gestión Partidas<br/>Búsqueda + Filtrado<br/>levelWindow"]
+        Courts["🏟️ Clubs y Pistas<br/>Catálogo"]
+        Reserve["📅 Reservas<br/>Validación Horarios"]
+        Express["Express.js<br/>TypeScript"]
+    end
+
+    subgraph BD["🗄️ PostgreSQL"]
+        Users["users<br/>id, email, level,<br/>skill_score"]
+        Clubs["clubs<br/>id, name, city"]
+        Courts_T["courts<br/>id, club_id, name,<br/>surface"]
+        Matches_T["matches<br/>id, host_user_id,<br/>status, scheduled_at"]
+        Players["match_players<br/>match_id, user_id"]
+        Reserves["reservations<br/>id, user_id,<br/>starts_at"]
+    end
+
+    UI --> API
+    Cache -->|incluye| UI
+    API -->|Request| Auth
+    API -->|POST /register| Quiz
+    API -->|GET /matches/open| Matches
+    API -->|GET /clubs| Courts
+    API -->|POST /reservations| Reserve
+    Auth --> Express
+    Quiz --> Express
+    Matches --> Express
+    Courts --> Express
+    Reserve --> Express
+    Express -->|Query| Users
+    Express -->|Query| Clubs
+    Express -->|Query| Courts_T
+    Express -->|Query| Matches_T
+    Express -->|Query| Players
+    Express -->|Query| Reserves
+    API -->|Response JSON| UI
+
+    style Cliente fill:#e1f5ff
+    style Red fill:#fff3e0
+    style Backend fill:#f3e5f5
+    style BD fill:#e8f5e9
