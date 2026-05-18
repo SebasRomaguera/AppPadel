@@ -10,3 +10,4 @@ frontend/dist/
 *.log
 .DS_Store
 memoria_proyecto.tex
+presentacion_proyecto.md
