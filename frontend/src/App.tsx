@@ -74,6 +74,17 @@ function toDatetimeLocal(date: Date) {
   )}:${pad(date.getMinutes())}`;
 }
 
+function formatDateTime(value: string) {
+  return new Date(value).toLocaleString("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
 const defaultReservationStart = toDatetimeLocal(new Date(Date.now() + 60 * 60 * 1000));
 
 function App() {
@@ -493,7 +504,7 @@ function App() {
                   <p>
                     {match.club_name} · {match.court_name}
                   </p>
-                  <p>{new Date(match.scheduled_at).toLocaleString()}</p>
+                  <p>{formatDateTime(match.scheduled_at)}</p>
                   <p>
                     Nivel {match.level_min} - {match.level_max}
                   </p>
@@ -677,7 +688,7 @@ function App() {
                     {reservation.court_name} · {reservation.court_surface}
                   </p>
                   <p>{reservation.club_city}</p>
-                  <p>{new Date(reservation.starts_at).toLocaleString()}</p>
+                  <p>{formatDateTime(reservation.starts_at)}</p>
                   <p>Duración: {reservation.duration_minutes} minutos</p>
                   <button
                     type="button"
