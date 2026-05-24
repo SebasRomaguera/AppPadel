@@ -120,7 +120,7 @@ SELECT 'Pablo Riera', 'pablo.fake@apppadel.local', 'FAKE_USER', 3, 13, TRUE
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'pablo.fake@apppadel.local');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '16 hours', 90, 2, 3, 'Partida abierta tarde', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '14 days' + INTERVAL '16 hours', 90, 2, 3, 'Partida abierta tarde', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Club Son Racket'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Pista 1'
@@ -128,7 +128,7 @@ WHERE u.email = 'carlos.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta tarde');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '16 hours 30 minutes', 90, 3, 4, 'Partida abierta noche', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '15 days' + INTERVAL '16 hours 30 minutes', 90, 3, 4, 'Partida abierta noche', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Arena Padel Center'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Central 1'
@@ -136,7 +136,7 @@ WHERE u.email = 'marta.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta noche');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '17 hours', 90, 1, 2, 'Partida abierta mañana', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '16 days' + INTERVAL '17 hours', 90, 1, 2, 'Partida abierta mañana', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Club Son Racket'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Pista 2'
@@ -144,7 +144,7 @@ WHERE u.email = 'nuria.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta mañana');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '17 hours 30 minutes', 90, 4, 5, 'Partida abierta avanzado', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '17 days' + INTERVAL '17 hours 30 minutes', 90, 4, 5, 'Partida abierta avanzado', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Arena Padel Center'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Central 2'
@@ -152,7 +152,7 @@ WHERE u.email = 'david.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta avanzado');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '18 hours', 90, 2, 3, 'Partida abierta tarde extra', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '18 days' + INTERVAL '18 hours', 90, 2, 3, 'Partida abierta tarde extra', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Club Son Racket'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Pista 1'
@@ -160,7 +160,7 @@ WHERE u.email = 'laura.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta tarde extra');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '18 hours 30 minutes', 90, 3, 5, 'Partida abierta premium', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '19 days' + INTERVAL '18 hours 30 minutes', 90, 3, 5, 'Partida abierta premium', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Arena Padel Center'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Central 1'
@@ -168,7 +168,7 @@ WHERE u.email = 'pablo.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta premium');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '19 hours', 90, 2, 4, 'Partida abierta test 2', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '20 days' + INTERVAL '19 hours', 90, 2, 4, 'Partida abierta test 2', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Club Son Racket'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Pista 2'
@@ -176,12 +176,35 @@ WHERE u.email = 'carlos.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta test 2');
 
 INSERT INTO matches (host_user_id, club_id, court_id, scheduled_at, duration_minutes, level_min, level_max, title, status)
-SELECT u.id, c.id, ct.id, CURRENT_DATE + INTERVAL '1 day' + INTERVAL '19 hours 30 minutes', 90, 3, 5, 'Partida abierta test 3', 'open'
+SELECT u.id, c.id, ct.id, DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' + INTERVAL '21 days' + INTERVAL '19 hours 30 minutes', 90, 3, 5, 'Partida abierta test 3', 'open'
 FROM users u
 JOIN clubs c ON c.name = 'Arena Padel Center'
 JOIN courts ct ON ct.club_id = c.id AND ct.name = 'Central 2'
 WHERE u.email = 'marta.fake@apppadel.local'
   AND NOT EXISTS (SELECT 1 FROM matches WHERE title = 'Partida abierta test 3');
+
+UPDATE matches
+SET scheduled_at = DATE_TRUNC('year', CURRENT_DATE)::date + INTERVAL '6 months' +
+  CASE title
+    WHEN 'Partida abierta tarde' THEN INTERVAL '14 days' + INTERVAL '16 hours'
+    WHEN 'Partida abierta noche' THEN INTERVAL '15 days' + INTERVAL '16 hours 30 minutes'
+    WHEN 'Partida abierta mañana' THEN INTERVAL '16 days' + INTERVAL '17 hours'
+    WHEN 'Partida abierta avanzado' THEN INTERVAL '17 days' + INTERVAL '17 hours 30 minutes'
+    WHEN 'Partida abierta tarde extra' THEN INTERVAL '18 days' + INTERVAL '18 hours'
+    WHEN 'Partida abierta premium' THEN INTERVAL '19 days' + INTERVAL '18 hours 30 minutes'
+    WHEN 'Partida abierta test 2' THEN INTERVAL '20 days' + INTERVAL '19 hours'
+    WHEN 'Partida abierta test 3' THEN INTERVAL '21 days' + INTERVAL '19 hours 30 minutes'
+  END
+WHERE title IN (
+  'Partida abierta tarde',
+  'Partida abierta noche',
+  'Partida abierta mañana',
+  'Partida abierta avanzado',
+  'Partida abierta tarde extra',
+  'Partida abierta premium',
+  'Partida abierta test 2',
+  'Partida abierta test 3'
+);
 
 INSERT INTO match_players (match_id, user_id)
 SELECT m.id, m.host_user_id
